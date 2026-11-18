@@ -1,0 +1,6 @@
+{
+  "name": "Kavach Mobile Security Console",
+  "description": "Mobile APK Scanner, Permanent Deletion Suppression Vault, Screenshot Threat Analyzer, and Android Anti-Hack Hardening Console.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

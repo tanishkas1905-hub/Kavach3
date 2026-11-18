@@ -1,0 +1,142 @@
+{
+  "entities": {
+    "DeletedApkRecord": {
+      "title": "DeletedApkRecord",
+      "description": "Cryptographic suppression record for an APK file that was permanently deleted so it is never surfaced again in scans.",
+      "type": "object",
+      "properties": {
+        "ownerId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$"
+        },
+        "sha256": {
+          "type": "string",
+          "minLength": 64,
+          "maxLength": 64,
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "fileName": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 255
+        },
+        "normalizedName": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 255
+        },
+        "fileSize": {
+          "type": "integer"
+        },
+        "packageHint": {
+          "type": "string",
+          "maxLength": 200
+        },
+        "deletionMethod": {
+          "type": "string",
+          "enum": ["disk_removed", "suppressed_permanently", "manual_confirmed"]
+        },
+        "riskLevel": {
+          "type": "string",
+          "enum": ["critical", "high", "medium", "low"]
+        },
+        "deletedAt": {
+          "type": "string",
+          "format": "date-time"
+        }
+      },
+      "required": [
+        "ownerId",
+        "sha256",
+        "fileName",
+        "normalizedName",
+        "fileSize",
+        "packageHint",
+        "deletionMethod",
+        "riskLevel",
+        "deletedAt"
+      ]
+    },
+    "HardeningStepState": {
+      "title": "HardeningStepState",
+      "description": "Completion state of an Android anti-hacking hardening checklist item.",
+      "type": "object",
+      "properties": {
+        "ownerId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$"
+        },
+        "stepKey": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 80,
+          "pattern": "^[a-zA-Z0-9_\\-]+$"
+        },
+        "completed": {
+          "type": "boolean"
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time"
+        }
+      },
+      "required": ["ownerId", "stepKey", "completed", "updatedAt"]
+    },
+    "ThreatAnalysisRecord": {
+      "title": "ThreatAnalysisRecord",
+      "description": "Summary result from Gemini multimodal screenshot or APK security analysis.",
+      "type": "object",
+      "properties": {
+        "ownerId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$"
+        },
+        "fileName": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 255
+        },
+        "verdict": {
+          "type": "string",
+          "enum": ["safe", "suspicious", "critical"]
+        },
+        "summary": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 1500
+        },
+        "analyzedAt": {
+          "type": "string",
+          "format": "date-time"
+        }
+      },
+      "required": ["ownerId", "fileName", "verdict", "summary", "analyzedAt"]
+    }
+  },
+  "firestore": {
+    "/users/{userId}/deleted_apks/{apkRecordId}": {
+      "schema": {
+        "$ref": "#/entities/DeletedApkRecord"
+      },
+      "description": "Stores permanently deleted APK suppression tombstones scoped strictly to the owning verified user."
+    },
+    "/users/{userId}/hardening_state/{stepId}": {
+      "schema": {
+        "$ref": "#/entities/HardeningStepState"
+      },
+      "description": "Stores per-user device hardening checklist status."
+    },
+    "/users/{userId}/threat_analyses/{analysisId}": {
+      "schema": {
+        "$ref": "#/entities/ThreatAnalysisRecord"
+      },
+      "description": "Stores per-user screenshot and threat analysis summaries."
+    }
+  }
+}
